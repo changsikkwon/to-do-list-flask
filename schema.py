@@ -41,6 +41,6 @@ class Query(graphene.ObjectType):
     node = relay.Node.Field()
     all_users = SQLAlchemyConnectionField(UserCon)
     all_tags = SQLAlchemyConnectionField(TagCon)
-    all_to_do_lists = SQLAlchemyConnectionField(ToDoListCon )
+    all_to_do_lists = SQLAlchemyConnectionField(ToDoListCon)
     
 schema = graphene.Schema(query = Query)
