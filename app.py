@@ -17,9 +17,5 @@ def create_app():
             get_context = lambda : { 'session' : Session }))
     
     CORS(app, resources = {r'*' : {'origins': '*'}})
-
-    @app.teardown_appcontext
-    def shutdown_session(exception = None):
-        Session.remove()
     
     return app
