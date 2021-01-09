@@ -9,6 +9,7 @@ instance/*
 __pychahe__
 .vscode
 config.py
+.idea
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
