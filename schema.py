@@ -3,6 +3,7 @@ from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
 from models import User as UserModel, Tag as TagModel, ToDoList as ToDoListModel
+from mutation import Mutations
 
 class User(SQLAlchemyObjectType):
     class Meta:
@@ -43,4 +44,4 @@ class Query(graphene.ObjectType):
     all_tags = SQLAlchemyConnectionField(TagCon)
     all_to_do_lists = SQLAlchemyConnectionField(ToDoListCon)
     
-schema = graphene.Schema(query = Query)
+schema = graphene.Schema(query = Query, mutation = Mutations)
