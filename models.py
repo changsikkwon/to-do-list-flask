@@ -24,15 +24,10 @@ class User(Base):
     updated_at = Column(DateTime, default=func.now())
 
 
-class Tag(Base):
-    __tablename__ = 'tag'
-    id = Column(Integer, primary_key=True)
-    tag = Column(String)
-
-
 class ToDoList(Base):
     __tablename__ = 'to_do_list'
     id = Column(Integer, primary_key=True)
+    tag = Column(String)
     content = Column(String)
     is_completed = Column(Boolean)
     target_date = Column(DateTime)
@@ -41,4 +36,3 @@ class ToDoList(Base):
     updated_at = Column(DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User, backref=backref('users', cascade='delete,all'))
-    tag_id = Column(Integer, ForeignKey('tag.id'), default=1)
