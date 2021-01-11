@@ -52,13 +52,16 @@ class AuthUser(graphene.Mutation):
     
     def mutate(self, info, account, password):
         user = Session.query(User).filter_by(account=account).first()
-        
+        print(user)
         try:
+            # 비밀번호 맞을시 토큰발행
             if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
                 access_token = jwt.encode({'user_id' : user.id}, SECRET_KEY, ALGORITHM).decode('utf-8')
                 return AuthUser(access_token=access_token)
+            # 비밀번호 틀릴시 에러메세지
             raise GraphQLError('Invalid_Password')
         
+        # 계정 없을시 에러메세지
         except AttributeError:
             raise GraphQLError('Invalid_Account')
     
