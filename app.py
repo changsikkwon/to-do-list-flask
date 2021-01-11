@@ -3,7 +3,10 @@ from flask_cors import CORS
 from flask_graphql import GraphQLView
 
 from models import Session
-from schema import schema
+from schema import Query
+from mutation import Mutations
+
+import graphene
 
 def create_app():
     app = Flask(__name__)
@@ -12,7 +15,7 @@ def create_app():
         '/graphql',
         view_func = GraphQLView.as_view(
             'graphql',
-            schema = schema,
+            schema = graphene.Schema(query = Query, mutation = Mutations),
             graphiql = True,
             get_context = lambda : { 'session' : Session }))
     
