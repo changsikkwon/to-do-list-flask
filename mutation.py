@@ -1,11 +1,15 @@
 from graphql import GraphQLError
 from sqlalchemy import func
+from flask import g
 
 from models import User, Session
+from config import SECRET_KEY, ALGORITHM
+from utils import login_required
 
 import schema
 import graphene
 import bcrypt
+import jwt
 
 class CreateUser(graphene.Mutation):
     class Arguments:
@@ -36,9 +40,28 @@ class CreateUser(graphene.Mutation):
         return CreateUser(user = data)
     
 
+class AuthUser(graphene.Mutation):
+    class Arguments:
+        account = graphene.String(required=True)
+        password = graphene.String(required=True)
+        
+    access_token = graphene.Field(graphene.String)
+    
+    def mutate(self, info, account, password):
+        user = Session.query(User).filter_by(account=account).first()
+        
+        try:
+            if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+                access_token = jwt.encode({'user_id' : user.id}, SECRET_KEY, ALGORITHM).decode('utf-8')
+                return AuthUser(access_token=access_token)
+            raise GraphQLError('Invalid_Password')
+        
+        except AttributeError:
+            raise GraphQLError('Invalid_Account')
+    
+
 class UpdateUser(graphene.Mutation):
     class Arguments:
-        id = graphene.ID(required=True)
         name = graphene.String()
         account = graphene.String()
         password = graphene.String()
@@ -46,8 +69,10 @@ class UpdateUser(graphene.Mutation):
         
     update_user = graphene.Field(lambda: schema.User)
     
+    @login_required    
     def mutate(self, info, **kwargs):
-        user = Session.query(User).filter_by(id=kwargs.get('id')).first()
+        user_id = g.user_id['user_id']
+        user = Session.query(User).filter_by(id=user_id).first()
         
         if 'password' in kwargs:
             kwargs['password'] = bcrypt.hashpw(kwargs['password'].encode('utf-8'),
@@ -64,8 +89,9 @@ class UpdateUser(graphene.Mutation):
         Session.commit()
         
         return UpdateUser(user)
-        
+    
         
 class Mutations(graphene.ObjectType):
     create_user = CreateUser.Field()
     update_user = UpdateUser.Field()
+    auth_user = AuthUser.Field()
