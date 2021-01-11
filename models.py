@@ -29,7 +29,7 @@ class ToDoList(Base):
     id = Column(Integer, primary_key=True)
     tag = Column(String)
     content = Column(String)
-    is_completed = Column(Boolean)
+    is_completed = Column(Boolean, default=False)
     target_date = Column(Date)
     complete_date = Column(Date)
     created_at = Column(DateTime, default=func.now())
