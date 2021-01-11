@@ -9,10 +9,10 @@ import bcrypt
 
 class CreateUser(graphene.Mutation):
     class Arguments:
-        name = graphene.String(required = True)
-        account = graphene.String(required = True)
-        password = graphene.String(required = True)
-        is_master = graphene.Boolean(default_value = False)
+        name = graphene.String(required=True)
+        account = graphene.String(required=True)
+        password = graphene.String(required=True)
+        is_master = graphene.Boolean(default_value=False)
                  
     user = graphene.Field(lambda: schema.User)
     
@@ -24,7 +24,7 @@ class CreateUser(graphene.Mutation):
             is_master = is_master
         )
         
-        if Session.query(User).filter_by(account = data.account).first():
+        if Session.query(User).filter_by(account=data.account).first():
             raise GraphQLError('Alredy Exist Account')
         
         data.password = bcrypt.hashpw(data.password.encode('utf-8'),
@@ -38,7 +38,7 @@ class CreateUser(graphene.Mutation):
 
 class UpdateUser(graphene.Mutation):
     class Arguments:
-        id = graphene.ID(required = True)
+        id = graphene.ID(required=True)
         name = graphene.String()
         account = graphene.String()
         password = graphene.String()
@@ -47,13 +47,13 @@ class UpdateUser(graphene.Mutation):
     update_user = graphene.Field(lambda: schema.User)
     
     def mutate(self, info, **kwargs):
-        user = Session.query(User).filter_by(id = kwargs.get('id')).first()
+        user = Session.query(User).filter_by(id=kwargs.get('id')).first()
         
         if 'password' in kwargs:
             kwargs['password'] = bcrypt.hashpw(kwargs['password'].encode('utf-8'),
                                         bcrypt.gensalt()).decode('utf-8')
         if 'account' in kwargs:
-            if Session.query(User).filter_by(account = kwargs['account']).first():
+            if Session.query(User).filter_by(account=kwargs['account']).first():
                 raise GraphQLError('Alredy Exist Account')
         
         kwargs['updated_at'] = func.now()
