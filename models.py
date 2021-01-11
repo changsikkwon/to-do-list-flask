@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Date, func
 from sqlalchemy.orm import relationship, backref, scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.schema import ForeignKey
@@ -30,8 +30,8 @@ class ToDoList(Base):
     tag = Column(String)
     content = Column(String)
     is_completed = Column(Boolean)
-    target_date = Column(DateTime)
-    complete_date = Column(DateTime)
+    target_date = Column(Date)
+    complete_date = Column(Date)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey('user.id'))
