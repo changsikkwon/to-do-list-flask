@@ -31,7 +31,7 @@ class CreateUser(graphene.Mutation):
         
         # account 중복 확인 중복시 에러메세지
         if Session.query(User).filter_by(account=user.account).first():
-            raise GraphQLError('Alredy Exist Account')
+            raise GraphQLError('Alredy_Exist_Account')
         
         user.password = bcrypt.hashpw(user.password.encode('utf-8'),
                                     bcrypt.gensalt()).decode('utf-8')
@@ -88,7 +88,7 @@ class UpdateUser(graphene.Mutation):
         # account 수정시 중복 확인 중복시 에러메세지
         if 'account' in kwargs:
             if Session.query(User).filter_by(account=kwargs['account']).first():
-                raise GraphQLError('Alredy Exist Account')
+                raise GraphQLError('Alredy_Exist_Account')
         
         kwargs['updated_at'] = func.now()
         
@@ -144,10 +144,10 @@ class UpdateToDoList(graphene.Mutation):
         
         # 일치하는 데이터 없을시 에러메세지
         if not to_do:
-            raise GraphQLError('Data does not exist')
+            raise GraphQLError('Data_Does_Not_Exist')
         # 완료된 일 수정시 에러메세지
         if to_do.is_completed == 1 and kwargs['is_completed'] != 0:
-            raise GraphQLError('It cannot be modified')
+            raise GraphQLError('It_Cannot_Be_Modified')
         # 완료 처리시 완료일 기록
         if to_do.is_completed == 0 and kwargs['is_completed'] == 1:
             to_do.complete_date = func.now()
@@ -180,7 +180,7 @@ class DeleteToDoList(graphene.Mutation):
         
         # 일치하는 데이터 없을시 에러메세지
         if not to_do:
-            raise GraphQLError('Data does not exist')
+            raise GraphQLError('Data_Does_Not_Exist')
         
         Session.delete(to_do)
         Session.commit()
