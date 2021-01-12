@@ -21,22 +21,25 @@ class Query(graphene.ObjectType):
     to_do_list_by_master = graphene.List(ToDoList, user_id=graphene.Int(required=True))
     user_list_by_master = graphene.List(User, offset=graphene.Int(required=True))
     
+    # 유저가 자신의 to do list를 확인하는 qeury
     @login_required
     def resolve_to_do_list_by_user(self, info):
         user_id = g.user_id['user_id']
-        to_do_query = ToDoList.get_query(info)
+        to_do_query = ToDoList.get_query(info).filter(ToDoListModel.user_id.contains(user_id))
         
-        return to_do_query.filter(ToDoListModel.user_id.contains(user_id))
+        return to_do_query
     
+    # 관리자가 특정 유저의 to do list를 확인하는 qeury
     @master_required
     def resolve_to_do_list_by_master(self, info, user_id):
-        to_do_query = ToDoList.get_query(info)
+        to_do_query = ToDoList.get_query(info).filter(ToDoListModel.user_id.contains(user_id))
         
-        return to_do_query.filter(ToDoListModel.user_id.contains(user_id))
+        return to_do_query
     
+    # 관리자가 유저 list를 확인하는 query
     @master_required
     def resolve_user_list_by_master(self, info, offset):
-        user_query = User.get_query(info)
+        user_query = User.get_query(info).filter(UserModel.is_master==0).limit(10).offset(offset)
         
-        return user_query.filter(UserModel.is_master==0).limit(10).offset(offset)
+        return user_query
         
