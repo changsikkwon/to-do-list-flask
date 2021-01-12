@@ -1,8 +1,8 @@
-from graphene import relay
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+from graphene_sqlalchemy import SQLAlchemyObjectType
+from flask import g
 
 from models import User as UserModel, ToDoList as ToDoListModel
-from mutation import Mutations
+from utils import login_required
 
 import graphene
 
@@ -17,4 +17,4 @@ class ToDoList(SQLAlchemyObjectType):
 
 
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
+    to_do_list = graphene.List(ToDoList)

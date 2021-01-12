@@ -6,7 +6,7 @@ from models import User, ToDoList, Session
 from config import SECRET_KEY, ALGORITHM
 from utils import login_required
 
-import schema
+import query
 import graphene
 import bcrypt
 import jwt
@@ -19,7 +19,7 @@ class CreateUser(graphene.Mutation):
         password = graphene.String(required=True)
         is_master = graphene.Boolean(default_value=False)
                  
-    user = graphene.Field(lambda: schema.User)
+    user = graphene.Field(lambda: query.User)
     
     def mutate(self, info, name, account, password, is_master):
         user = User(
@@ -74,7 +74,7 @@ class UpdateUser(graphene.Mutation):
         password = graphene.String()
         is_master = graphene.Boolean()
         
-    update_user = graphene.Field(lambda: schema.User)
+    update_user = graphene.Field(lambda: query.User)
     
     @login_required    
     def mutate(self, info, **kwargs):
@@ -107,7 +107,7 @@ class CreateToDoList(graphene.Mutation):
         content = graphene.String(required=True)
         target_date = graphene.Date()
         
-    to_do = graphene.Field(lambda: schema.ToDoList)
+    to_do = graphene.Field(lambda: query.ToDoList)
 
     @login_required
     def mutate(self, info, **kwargs):
@@ -135,7 +135,7 @@ class UpdateToDoList(graphene.Mutation):
         target_date = graphene.Date()
         is_completed = graphene.Boolean()
         
-    update_to_do = graphene.Field(lambda: schema.ToDoList)
+    update_to_do = graphene.Field(lambda: query.ToDoList)
     
     @login_required
     def mutate(self, info, **kwargs):
