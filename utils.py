@@ -1,4 +1,4 @@
-from flask import request, g, jsonify
+from flask import request, g
 from graphql import GraphQLError
 
 from config import SECRET_KEY, ALGORITHM
